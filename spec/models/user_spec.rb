@@ -3,7 +3,8 @@ require 'spec_helper'
 describe User do
 
   before do
-     @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar")
+     @user = User.new(name: "Example User", email: "user@example.com",
+                      password: "foobar", password_confirmation: "foobar")
   end
 
   subject { @user }
@@ -74,7 +75,7 @@ end
   describe "when password doesn't match confirmation" do
   before { @user.password_confirmation = "mismatch" }
   it { should_not be_valid }
-   end 
+   end
 
   describe "with a password that's too short" do
     before { @user.password = @user.password_confirmation = "a" * 5 }
@@ -95,5 +96,5 @@ end
       it { should_not eq user_for_invalid_password }
       specify { expect(user_for_invalid_password).to be_false }
     end
-  end  
+  end
   end
