@@ -152,12 +152,23 @@ end
       let(:unfollowed_post) do
         FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
       end
+      let(:followed_user) { FactoryGirl.create(:user) }
 
+      before do
+        @user.follow!(followed_user)
+        3.times { followed_user.microposts.create!(content: "Lorem ipsum") }
+      end
       its(:feed) { should include(newer_micropost) }
       its(:feed) { should include(older_micropost) }
       its(:feed) { should_not include(unfollowed_post) }
-    end
-    end
+
+    its(:feed) do
+       followed_user.microposts.each do |micropost|
+         should include(micropost)
+       end
+      end
+     end
+   end
 
     describe "following" do
     let(:other_user) { FactoryGirl.create(:user) }
@@ -169,13 +180,13 @@ end
     it { should be_following(other_user) }
     its(:followed_users) { should include(other_user) }
 
+    describe "followed user" do
+    subject { other_user }
+      its(:followers) { should include(@user) }
+  end
+
     describe "and unfollowing" do
       before { @user.unfollow!(other_user) }
-
-      describe "followed user" do
-      subject { other_user }
-      its(:followers) { should include(@user) }
-    end
 
       it { should_not be_following(other_user) }
       its(:followed_users) { should_not include(other_user) }
